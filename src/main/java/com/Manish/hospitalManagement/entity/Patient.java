@@ -1,12 +1,16 @@
 package com.Manish.hospitalManagement.entity;
 
+import com.Manish.hospitalManagement.enums.BloodGroupType;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @ToString
@@ -28,13 +32,29 @@ public class Patient {     // currently the table name is "patient"
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    //    @Column(name = "patient_name", unique = true, nullable = false, updatable = false)
+    @Column(nullable = false, length = 40)
     private String name;
 
-    private LocalDate dob;
+    private LocalDate birthDate;
+
+    @Column(unique = true, nullable = false)
     private String email;
+
     private String gender;
 
-//    @CreationTimestamp   //  this annotation gives the time at which this field was created and cannot be updated in future
-//    private LocalDateTime createdAt;
+    @CreationTimestamp   //  this annotation gives the time at which this field was created
+    @Column(updatable = false)
+    private LocalDateTime createdAt;
+
+    @Enumerated(EnumType.STRING)
+    private BloodGroupType bloodGroup;
+
+    @OneToOne
+//    @JoinColumn(name = "patient_insurance_id")   // owning side
+    private Insurance insurance;
+
+    @OneToMany(mappedBy = "patient")
+    private List<Appointment> appointments;
+
+
 }
