@@ -2,14 +2,12 @@ package com.Manish.hospitalManagement.entity;
 
 import com.Manish.hospitalManagement.enums.BloodGroupType;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -26,6 +24,7 @@ import java.util.List;
 //        }
 //)
 @AllArgsConstructor
+@NoArgsConstructor
 public class Patient {     // currently the table name is "patient"
 
     @Id
@@ -49,12 +48,15 @@ public class Patient {     // currently the table name is "patient"
     @Enumerated(EnumType.STRING)
     private BloodGroupType bloodGroup;
 
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
 //    @JoinColumn(name = "patient_insurance_id")   // owning side
     private Insurance insurance;
 
-    @OneToMany(mappedBy = "patient")
-    private List<Appointment> appointments;
+    @OneToMany(mappedBy = "patient", cascade = CascadeType.ALL, orphanRemoval = true)
+    // agr patient remove hota hai toh , uski saari appointments bhi delete ho jayengi
+    // agr List of appointments me se ek appointment delete ho jaaye toh parent me se bhi uska reference delete ho jayega
+    @ToString.Exclude
+    private List<Appointment> appointments = new ArrayList<>();
 
 
 }
